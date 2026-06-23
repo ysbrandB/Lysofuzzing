@@ -19,7 +19,7 @@ REPEAT=1
 # WORKER_MODE=1
 
 # [WORKERS]: number of worker threads (default: all cores)
-# WORKERS=3
+WORKERS=4
 
 # [WORKER_POOL]: a space-separated list of logical cores to allocate
 # WORKER_POOL="1 3 5 7 9"
@@ -71,12 +71,13 @@ POLL=5
 ###
 
 # FUZZERS: an array of fuzzer names (from magma/fuzzers/*) to evaluate
-FUZZERS=(lyso)
+FUZZERS=(domfuzz)
 
 # [fuzzer_TARGETS]: an array of target names (from magma/targets/*) to fuzz with
 # `fuzzer`. The `fuzzer` prefix is a fuzzer listed in the FUZZERS array
 # (default: all targets)
-lyso_TARGETS=(libpng libtiff libxml2)
+#lyso_TARGETS=(libpng libtiff libxml2)
+lyso_TARGETS=(libpng)
 
 # [fuzzer_target_PROGRAMS]: an array of program names (from
 # magma/targets/target/configrc) to use as execution drivers when fuzzing the
