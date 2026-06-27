@@ -5,6 +5,8 @@ apt-get update && \
     apt-get install -y make clang-9 llvm-9-dev libc++-9-dev libc++abi-9-dev \
         build-essential git wget gcc-7-plugin-dev
 
+apt-get install -y python3 python3-dev python3-pip
+
 update-alternatives \
   --install /usr/lib/llvm              llvm             /usr/lib/llvm-9  20 \
   --slave   /usr/bin/llvm-config       llvm-config      /usr/bin/llvm-config-9  \

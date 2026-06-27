@@ -51,6 +51,9 @@ shopt -s nullglob
 rm -f "$LOCKDIR"/*
 shopt -u nullglob
 
+#Fix the aflplusplus error which normally needs to use the ignore uncaught errors env
+echo core | sudo tee /proc/sys/kernel/core_pattern >/dev/null
+
 export MUX_TAR=magma_tar
 export MUX_CID=magma_cid
 

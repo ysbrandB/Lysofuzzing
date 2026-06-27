@@ -55,4 +55,3 @@ else
    -o "$OUT/sqlite3_fuzz" \
    $LDFLAGS $LIBS -pthread -ldl -lm
 fi
-~   
