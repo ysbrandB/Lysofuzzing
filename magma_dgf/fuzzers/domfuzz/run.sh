@@ -21,8 +21,7 @@ echo "[+] Binary: $BIN"
 mkdir -p "$SHARED/bin"
 cp "$BIN" "$SHARED/bin"
 
-## 1. Update the target address to your SQLite line destination
-#TARGET_ADDR="sqlite3.c:137870"
+## 1. Process the target file
 BB_FILE="$OUT/tmp-$PROGRAM/BBtargets.txt"
 
 if [[ ! -f "$BB_FILE" ]]; then
@@ -30,34 +29,41 @@ if [[ ! -f "$BB_FILE" ]]; then
     exit 1
 fi
 
-TARGET_ADDR=$(head -n1 "$BB_FILE" | tr -d '\r')
+# 2. Loop through all lines in BBtargets.txt and accumulate ranges
+echo "[*] Calculating dominator ranges via angr for all targets..."
+ALL_RANGES=()
 
-if [[ -z "$TARGET_ADDR" ]]; then
-    echo "[-] Error: BB target file is empty."
+while IFS= read -r line || [[ -n "$line" ]]; do
+    # Clean carriage returns (\r) from the line
+    TARGET_ADDR=$(echo "$line" | tr -d '\r')
+
+    # Skip empty lines
+    [[ -z "$TARGET_ADDR" ]] && continue
+
+    echo "[+] Processing target address: $TARGET_ADDR"
+    RANGES_STR=$(python3 "$FUZZER/cfg.py" "$BIN" --target "$TARGET_ADDR")
+
+    # Check if python script failed or threw an error
+    if [[ $? -ne 0 || -z "$RANGES_STR" || "$RANGES_STR" == *"Error"* ]]; then
+        echo "[-] Warning: Failed to calculate ranges for $TARGET_ADDR. Skipping."
+        continue
+    fi
+
+    ALL_RANGES+=("$RANGES_STR")
+done < "$BB_FILE"
+
+# Join all collected ranges into a single comma-separated string
+COMBINED_RANGES=$(IFS=,; echo "${ALL_RANGES[*]}")
+
+if [[ -z "$COMBINED_RANGES" ]]; then
+    echo "[-] Critical Error: No valid instrumentation ranges were calculated!"
     exit 1
 fi
 
-echo "[+] Using target address: $TARGET_ADDR"
-
-# 2. Capture the ranges directly into a shell variable using command substitution
-echo "[*] Calculating dominator ranges via angr..."
-RANGES_STR=$(python3 "$FUZZER/cfg.py" "$BIN" --target "$TARGET_ADDR")
-
-# Check if the python script failed or returned an error string
-if [[ $? -ne 0 || -z "$RANGES_STR" || "$RANGES_STR" == *"Error"* ]]; then
-    echo "[-] Critical Error: Failed to calculate instrumentation ranges!"
-    echo "$RANGES_STR"
-    exit 1
-fi
-
-echo "[+] Target ranges calculated: $RANGES_STR"
+echo "[+] Combined target ranges: $COMBINED_RANGES"
 
 # Save it to a file for tracking/debugging purposes
-echo "$RANGES_STR" > "$OUT/afl/qemu_ranges"
-
-# 3. EXPORT THE RANGES TO QEMU
-# AFL++ QEMU checks this variable to restrict coverage tracing to these specific blocks
-export AFL_QEMU_INST_RANGES="$RANGES_STR"
+echo "$COMBINED_RANGES" > "$OUT/afl/qemu_ranges"
 
 mkdir -p "$SHARED/findings"
 flag_cmplog=(-m none -c 0)
@@ -75,11 +81,14 @@ export AFL_DRIVER_DONT_DEFER=1
 # ------------------------------------------
 
 # 4. Launching the Master fuzzer process (Backgrounded, output redirected)
-echo "Launching AFL++ Master on Core 1..."
-"$FUZZER/repo/afl-fuzz" -M master -Q -i "$TARGET/corpus/$PROGRAM" -o "$SHARED/findings" \
+(
+  # AFL++ QEMU checks this variable to restrict coverage tracing to these specific blocks
+  export AFL_QEMU_INST_RANGES="$COMBINED_RANGES"
+  echo "Launching AFL++ Master on Core 1..."
+  "$FUZZER/repo/afl-fuzz" -M master -Q -i "$TARGET/corpus/$PROGRAM" -o "$SHARED/findings" \
     "${flag_cmplog[@]}" -d \
     $FUZZARGS -- "$BIN" $ARGS > "$SHARED/master.log" 2>&1 &
-
+)
 # Give the master a brief window to create the shared memory structures
 sleep 2
 

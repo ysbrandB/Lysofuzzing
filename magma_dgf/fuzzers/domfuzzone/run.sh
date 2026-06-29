@@ -55,10 +55,6 @@ echo "[+] Target ranges calculated: $RANGES_STR"
 # Save it to a file for tracking/debugging purposes
 echo "$RANGES_STR" > "$OUT/afl/qemu_ranges"
 
-# 3. EXPORT THE RANGES TO QEMU
-# AFL++ QEMU checks this variable to restrict coverage tracing to these specific blocks
-export AFL_QEMU_INST_RANGES="$RANGES_STR"
-
 mkdir -p "$SHARED/findings"
 flag_cmplog=(-m none -c 0)
 
@@ -75,10 +71,14 @@ export AFL_DRIVER_DONT_DEFER=1
 # ------------------------------------------
 
 # 4. Launching the Master fuzzer process (Backgrounded, output redirected)
-echo "Launching AFL++ Master on Core 1..."
-"$FUZZER/repo/afl-fuzz" -M master -Q -i "$TARGET/corpus/$PROGRAM" -o "$SHARED/findings" \
+(
+  # AFL++ QEMU checks this variable to restrict coverage tracing to these specific blocks
+  export AFL_QEMU_INST_RANGES="$COMBINED_RANGES"
+  echo "Launching AFL++ Master on Core 1..."
+  "$FUZZER/repo/afl-fuzz" -M master -Q -i "$TARGET/corpus/$PROGRAM" -o "$SHARED/findings" \
     "${flag_cmplog[@]}" -d \
     $FUZZARGS -- "$BIN" $ARGS > "$SHARED/master.log" 2>&1 &
+)
 
 # Give the master a brief window to create the shared memory structures
 sleep 2
