@@ -73,7 +73,7 @@ export AFL_DRIVER_DONT_DEFER=1
 # 4. Launching the Master fuzzer process (Backgrounded, output redirected)
 (
   # AFL++ QEMU checks this variable to restrict coverage tracing to these specific blocks
-  export AFL_QEMU_INST_RANGES="$COMBINED_RANGES"
+  export AFL_QEMU_INST_RANGES="$RANGES_STR"
   echo "Launching AFL++ Master on Core 1..."
   "$FUZZER/repo/afl-fuzz" -M master -Q -i "$TARGET/corpus/$PROGRAM" -o "$SHARED/findings" \
     "${flag_cmplog[@]}" -d \
