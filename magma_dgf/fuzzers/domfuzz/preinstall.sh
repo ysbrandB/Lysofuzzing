@@ -7,6 +7,8 @@ apt-get update && \
         libpixman-1-dev ninja-build bison flex libbison-dev \
         python3-pip pkg-config libglib2.0-dev
 
+apt-get install -y build-essential libtool python3 python3-dev python3-pip gdb
+
 update-alternatives \
   --install /usr/lib/llvm              llvm             /usr/lib/llvm-9  20 \
   --slave   /usr/bin/llvm-config       llvm-config      /usr/bin/llvm-config-9  \
@@ -35,3 +37,6 @@ update-alternatives \
   --install /usr/bin/clang                 clang                  /usr/bin/clang-9     20 \
   --slave   /usr/bin/clang++               clang++                /usr/bin/clang++-9 \
   --slave   /usr/bin/clang-cpp             clang-cpp              /usr/bin/clang-cpp-9
+
+python3 -m pip install --upgrade pip
+python3 -m pip install angr networkx

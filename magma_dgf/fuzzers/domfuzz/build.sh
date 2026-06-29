@@ -17,8 +17,7 @@ export CXX=clang++
 export AFL_NO_X86=1
 export PYTHON_INCLUDE=/
 make -j$(nproc) || exit 1
-(cd qemu_mode && ./build_qemu_support.sh)
 make -C utils/aflpp_driver || exit 1
-mkdir -p "$OUT/afl"
-mkdir -p "$OUT/cmplog"
-cp "$FUZZER/repo/utils/aflpp_driver/aflpp_qemu_driver_hook.so" "$OUT/afl/"
+(cd qemu_mode && ./build_qemu_support.sh)
+mkdir -p "$OUT/afl" "$OUT/cmplog"
+

@@ -71,14 +71,14 @@ POLL=5
 ###
 
 # FUZZERS: an array of fuzzer names (from magma/fuzzers/*) to evaluate
-FUZZERS=(aflplusplus)
+FUZZERS=(domfuzz)
 
 # [fuzzer_TARGETS]: an array of target names (from magma/targets/*) to fuzz with
 # `fuzzer`. The `fuzzer` prefix is a fuzzer listed in the FUZZERS array
 # (default: all targets)
 #lyso_TARGETS=(libpng libtiff libxml2)
 #lyso_TARGETS=(libpng)
-domfuzz_TARGETS=(libsndfile sqlite3)
+domfuzz_TARGETS=(sqlite3)
 aflplusplus_TARGETS=(libsndfile sqlite3)
 # [fuzzer_target_PROGRAMS]: an array of program names (from
 # magma/targets/target/configrc) to use as execution drivers when fuzzing the
