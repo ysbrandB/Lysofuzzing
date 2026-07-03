@@ -1,3 +1,4 @@
 .idea
 *.pyc
 *.svg
+magma_dgf/targets/*/corpus/
