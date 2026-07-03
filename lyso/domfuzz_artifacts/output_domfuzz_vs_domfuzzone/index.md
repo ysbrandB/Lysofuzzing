@@ -1,0 +1,348 @@
+---
+title: Report
+---
+
+
+{% capture template %}
+
+
+
+<div class="section">
+    <h1>Experiment Configuration</h1>
+    <ul class="browser-default">
+        <li><b>Duration</b>: 1w</li>
+        <li><b>Trials</b>: 10</li>
+        <li><b>Version</b>: v1.0</li>
+    </ul>
+</div>
+<div class="section">
+    <h1>Fuzz Targets</h1>
+    <p>This report summarizes the results of fuzzing the following targets:</p>
+    <ul id="target-list" class="browser-default">
+        
+        <li><a href="targets/libsndfile.html">libsndfile</a></li>
+        
+        <li><a href="targets/libtiff.html">libtiff</a></li>
+        
+        <li><a href="targets/libxml2.html">libxml2</a></li>
+        
+    </ul>
+</div>
+
+<div class="section">
+    <h1>Evaluated Fuzzers</h1>
+    <p>The fuzzers used in this evaluation are listed below:</p>
+    <ul id="fuzzer-list" class="browser-default">
+        
+        <li><a href="fuzzers/domfuzz.html">domfuzz</a></li>
+        
+        <li><a href="fuzzers/domfuzzone.html">domfuzzone</a></li>
+        
+    </ul>
+</div>
+
+<!--
+EXPERIMENT PARAMETERS WILL BE LISTED HERE
+-->
+
+<div class="section">
+    <h1>Experiment Summary</h1>
+    <div id="bugs-triggered">
+        <h2>Total Unique Bugs Triggered</h2>
+        <ul class="collapsible popout">
+            <li>
+                <div class="collapsible-header">
+                    <h3>Mean and Standard Deviation</h3>
+                </div>
+                <div class="collapsible-body">
+                    This plot shows the mean number of unique bugs triggered by every fuzzer against every target,
+                    and the standard deviation bar, across all campaigns.
+                </div>
+            </li>
+        </ul>
+        <img class="materialboxed responsive-img" src="plot/summary_unique_bugs.svg">
+        <ul class="collapsible popout">
+            <li>
+                <div class="collapsible-header">
+                    <h3>Stastistical Significance</h3>
+                </div>
+                <div class="collapsible-body">
+                    This matrix summarizes the p-values of the pairwise Mann-Whitney U tests calculated against the
+                    total bug count sample sets collected for every fuzzer across all campaigns. Cells with a green
+                    shade indicate that the number of bugs triggered by a fuzzer is statistically different.
+                </div>
+            </li>
+        </ul>
+        <img class="materialboxed responsive-img" src="plot/summary_signplot.svg">
+    </div>
+
+    <div id="mean-survival">
+        <h2>Mean Survival Time</h2>
+        <ul class="collapsible popout">
+            <li>
+                <div class="collapsible-header">
+                    <h3>Ranking of Bugs and Fuzzers</h3>
+                </div>
+                <div class="collapsible-body">
+                    This table shows the restricted mean survival time for every bug being reached or triggered over the
+                    duration of the campaign, using the Kaplan-Meier non-parametric survival function estimator.
+                    Green-shaded cells indicate the best performance (lowest time) for a bug metric across all fuzzers.
+                    Yellow-shaded cells indicate the worst performance (highest time) for a bug metric across all fuzzers.
+                    Red-shaded cells indicate that the bug survived being reached or triggered by the fuzzer throughout
+                    the campaign duration.
+                </div>
+            </li>
+        </ul>
+        <div class="center">
+            <a id="btn-colormap" class="btn-small waves-effect waves-light" style="margin-bottom: 10px; color: white; font-weight: normal;">
+                <i class="material-icons left">color_lens</i>
+                Change Colormap
+            </a>
+        </div>
+        <script type="text/javascript">
+            $('#btn-colormap').click(function() {
+                stl = $('#survival_stylesheet');
+                var href = stl.prop('href');
+                if (href.includes('hiliter')) {
+                    stl.prop('href', 'css/survival_heatmap.css');
+                } else {
+                    stl.prop('href', 'css/survival_hiliter.css');
+                }
+            });
+        </script>
+        <link id="survival_stylesheet" rel="stylesheet" href="css/survival_hiliter.css">
+        <style type="text/css">
+#T_survival_table tr:nth-child(even) {
+  background-color: #ececec;
+}
+#T_survival_table tbody tr:hover {
+  background-color: #d9edfd;
+}
+#T_survival_table thead tr:not(:last-child) .index_name {
+  visibility: hidden;
+}
+#T_survival_table thead tr:nth-child(3) {
+  display: none;
+}
+#T_survival_table tbody td {
+  padding: 2px 5px 2px 15px;
+  text-align: right;
+}
+#T_survival_table th {
+  padding: 2px 5px 2px 5px;
+  text-align: center;
+}
+#T_survival_table th {
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0px;
+}
+#T_survival_table  td {
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0px;
+}
+#T_survival_table  tr {
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0px;
+}
+#T_survival_table thead tr:first-child th:not(:last-child) {
+  border-right: 1px solid #888888;
+}
+#T_survival_table  th:nth-child(odd):not(:last-child) {
+  border-right: 1px solid #888888;
+}
+#T_survival_table  td:nth-child(odd):not(:last-child) {
+  border-right: 1px solid #888888;
+}
+#T_survival_table  {
+  border-collapse: collapse;
+}
+</style>
+<table id="T_survival_table">
+  <thead>
+    <tr>
+      <th class="index_name level0" >Fuzzer</th>
+      <th class="col_heading level0 col0" colspan="2">domfuzz</th>
+      <th class="col_heading level0 col2" colspan="2">domfuzzone</th>
+    </tr>
+    <tr>
+      <th class="index_name level1" >Metric</th>
+      <th class="col_heading level1 col0" >R</th>
+      <th class="col_heading level1 col1" >T</th>
+      <th class="col_heading level1 col2" >R</th>
+      <th class="col_heading level1 col3" >T</th>
+    </tr>
+    <tr>
+      <th class="index_name level0" >Bug ID</th>
+      <th class="blank col0" >&nbsp;</th>
+      <th class="blank col1" >&nbsp;</th>
+      <th class="blank col2" >&nbsp;</th>
+      <th class="blank col3" >&nbsp;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_survival_tablelevel0_row0" class="row_heading level0 row0" >TIF007</th>
+      <td id="T_survival_tablerow0_col0" class="data row0 col0" >8m</td>
+      <td id="T_survival_tablerow0_col1" class="data row0 col1" >12m</td>
+      <td id="T_survival_tablerow0_col2" class="data row0 col2" >30s</td>
+      <td id="T_survival_tablerow0_col3" class="data row0 col3" >1m</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row1" class="row_heading level0 row1" >XML017</th>
+      <td id="T_survival_tablerow1_col0" class="data row1 col0" >14m</td>
+      <td id="T_survival_tablerow1_col1" class="data row1 col1" >18m</td>
+      <td id="T_survival_tablerow1_col2" class="data row1 col2" >1m</td>
+      <td id="T_survival_tablerow1_col3" class="data row1 col3" >2m</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row2" class="row_heading level0 row2" >SND001</th>
+      <td id="T_survival_tablerow2_col0" class="data row2 col0" >6m</td>
+      <td id="T_survival_tablerow2_col1" class="data row2 col1" >1h</td>
+      <td id="T_survival_tablerow2_col2" class="data row2 col2" >1m</td>
+      <td id="T_survival_tablerow2_col3" class="data row2 col3" >3m</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row3" class="row_heading level0 row3" >SND005</th>
+      <td id="T_survival_tablerow3_col0" class="data row3 col0" >6m</td>
+      <td id="T_survival_tablerow3_col1" class="data row3 col1" >2h</td>
+      <td id="T_survival_tablerow3_col2" class="data row3 col2" >1m</td>
+      <td id="T_survival_tablerow3_col3" class="data row3 col3" >2m</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row4" class="row_heading level0 row4" >TIF005</th>
+      <td id="T_survival_tablerow4_col0" class="data row4 col0" >2h</td>
+      <td id="T_survival_tablerow4_col1" class="data row4 col1" >2h</td>
+      <td id="T_survival_tablerow4_col2" class="data row4 col2" >23m</td>
+      <td id="T_survival_tablerow4_col3" class="data row4 col3" >23m</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row5" class="row_heading level0 row5" >TIF006</th>
+      <td id="T_survival_tablerow5_col0" class="data row5 col0" >2h</td>
+      <td id="T_survival_tablerow5_col1" class="data row5 col1" >2h</td>
+      <td id="T_survival_tablerow5_col2" class="data row5 col2" >23m</td>
+      <td id="T_survival_tablerow5_col3" class="data row5 col3" >23m</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row6" class="row_heading level0 row6" >SND007</th>
+      <td id="T_survival_tablerow6_col0" class="data row6 col0" >5m</td>
+      <td id="T_survival_tablerow6_col1" class="data row6 col1" >1h</td>
+      <td id="T_survival_tablerow6_col2" class="data row6 col2" >55s</td>
+      <td id="T_survival_tablerow6_col3" class="data row6 col3" >1h</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row7" class="row_heading level0 row7" >XML009</th>
+      <td id="T_survival_tablerow7_col0" class="data row7 col0" >14m</td>
+      <td id="T_survival_tablerow7_col1" class="data row7 col1" >2h</td>
+      <td id="T_survival_tablerow7_col2" class="data row7 col2" >1m</td>
+      <td id="T_survival_tablerow7_col3" class="data row7 col3" >2h</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row8" class="row_heading level0 row8" >TIF014</th>
+      <td id="T_survival_tablerow8_col0" class="data row8 col0" >8m</td>
+      <td id="T_survival_tablerow8_col1" class="data row8 col1" >25m</td>
+      <td id="T_survival_tablerow8_col2" class="data row8 col2" >30s</td>
+      <td id="T_survival_tablerow8_col3" class="data row8 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row9" class="row_heading level0 row9" >SND017</th>
+      <td id="T_survival_tablerow9_col0" class="data row9 col0" >1h</td>
+      <td id="T_survival_tablerow9_col1" class="data row9 col1" >1h</td>
+      <td id="T_survival_tablerow9_col2" class="data row9 col2" >1w</td>
+      <td id="T_survival_tablerow9_col3" class="data row9 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row10" class="row_heading level0 row10" >SND024</th>
+      <td id="T_survival_tablerow10_col0" class="data row10 col0" >5m</td>
+      <td id="T_survival_tablerow10_col1" class="data row10 col1" >1h</td>
+      <td id="T_survival_tablerow10_col2" class="data row10 col2" >55s</td>
+      <td id="T_survival_tablerow10_col3" class="data row10 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row11" class="row_heading level0 row11" >SND006</th>
+      <td id="T_survival_tablerow11_col0" class="data row11 col0" >5m</td>
+      <td id="T_survival_tablerow11_col1" class="data row11 col1" >1h</td>
+      <td id="T_survival_tablerow11_col2" class="data row11 col2" >55s</td>
+      <td id="T_survival_tablerow11_col3" class="data row11 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row12" class="row_heading level0 row12" >TIF012</th>
+      <td id="T_survival_tablerow12_col0" class="data row12 col0" >8m</td>
+      <td id="T_survival_tablerow12_col1" class="data row12 col1" >1w</td>
+      <td id="T_survival_tablerow12_col2" class="data row12 col2" >30s</td>
+      <td id="T_survival_tablerow12_col3" class="data row12 col3" >2h</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row13" class="row_heading level0 row13" >TIF009</th>
+      <td id="T_survival_tablerow13_col0" class="data row13 col0" >2h</td>
+      <td id="T_survival_tablerow13_col1" class="data row13 col1" >2h</td>
+      <td id="T_survival_tablerow13_col2" class="data row13 col2" >1w</td>
+      <td id="T_survival_tablerow13_col3" class="data row13 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row14" class="row_heading level0 row14" >TIF010</th>
+      <td id="T_survival_tablerow14_col0" class="data row14 col0" >1w</td>
+      <td id="T_survival_tablerow14_col1" class="data row14 col1" >1w</td>
+      <td id="T_survival_tablerow14_col2" class="data row14 col2" >2h</td>
+      <td id="T_survival_tablerow14_col3" class="data row14 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row15" class="row_heading level0 row15" >TIF003</th>
+      <td id="T_survival_tablerow15_col0" class="data row15 col0" >8m</td>
+      <td id="T_survival_tablerow15_col1" class="data row15 col1" >1w</td>
+      <td id="T_survival_tablerow15_col2" class="data row15 col2" >25s</td>
+      <td id="T_survival_tablerow15_col3" class="data row15 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row16" class="row_heading level0 row16" >XML001</th>
+      <td id="T_survival_tablerow16_col0" class="data row16 col0" >15m</td>
+      <td id="T_survival_tablerow16_col1" class="data row16 col1" >1w</td>
+      <td id="T_survival_tablerow16_col2" class="data row16 col2" >2m</td>
+      <td id="T_survival_tablerow16_col3" class="data row16 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row17" class="row_heading level0 row17" >XML003</th>
+      <td id="T_survival_tablerow17_col0" class="data row17 col0" >14m</td>
+      <td id="T_survival_tablerow17_col1" class="data row17 col1" >1w</td>
+      <td id="T_survival_tablerow17_col2" class="data row17 col2" >1m</td>
+      <td id="T_survival_tablerow17_col3" class="data row17 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row18" class="row_heading level0 row18" >XML006</th>
+      <td id="T_survival_tablerow18_col0" class="data row18 col0" >15m</td>
+      <td id="T_survival_tablerow18_col1" class="data row18 col1" >1w</td>
+      <td id="T_survival_tablerow18_col2" class="data row18 col2" >2m</td>
+      <td id="T_survival_tablerow18_col3" class="data row18 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row19" class="row_heading level0 row19" >XML008</th>
+      <td id="T_survival_tablerow19_col0" class="data row19 col0" >17m</td>
+      <td id="T_survival_tablerow19_col1" class="data row19 col1" >1w</td>
+      <td id="T_survival_tablerow19_col2" class="data row19 col2" >3m</td>
+      <td id="T_survival_tablerow19_col3" class="data row19 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row20" class="row_heading level0 row20" >SND016</th>
+      <td id="T_survival_tablerow20_col0" class="data row20 col0" >5m</td>
+      <td id="T_survival_tablerow20_col1" class="data row20 col1" >1w</td>
+      <td id="T_survival_tablerow20_col2" class="data row20 col2" >40s</td>
+      <td id="T_survival_tablerow20_col3" class="data row20 col3" >1w</td>
+    </tr>
+    <tr>
+      <th id="T_survival_tablelevel0_row21" class="row_heading level0 row21" >XML012</th>
+      <td id="T_survival_tablerow21_col0" class="data row21 col0" >14m</td>
+      <td id="T_survival_tablerow21_col1" class="data row21 col1" >1w</td>
+      <td id="T_survival_tablerow21_col2" class="data row21 col2" >1m</td>
+      <td id="T_survival_tablerow21_col3" class="data row21 col3" >1w</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
+
+
+
+{% endcapture %}
+{{ template | replace: '    ', ''}}
